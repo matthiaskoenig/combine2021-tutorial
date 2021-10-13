@@ -22,6 +22,9 @@
               <bqbiol:is>
                 <rdf:Bag>
                   <rdf:li rdf:resource="https://identifiers.org/SBO:0000290"/>
+                  <rdf:li rdf:resource="https://identifiers.org/ncit/C61554"/>
+                  <rdf:li rdf:resource="https://identifiers.org/GO:0005829"/>
+                  <rdf:li rdf:resource="https://identifiers.org/FMA:66836"/>
                 </rdf:Bag>
               </bqbiol:is>
             </rdf:Description>
@@ -37,6 +40,8 @@
               <bqbiol:is>
                 <rdf:Bag>
                   <rdf:li rdf:resource="https://identifiers.org/SBO:0000247"/>
+                  <rdf:li rdf:resource="https://identifiers.org/ncit/C2831"/>
+                  <rdf:li rdf:resource="https://identifiers.org/CHEBI:17234"/>
                 </rdf:Bag>
               </bqbiol:is>
             </rdf:Description>

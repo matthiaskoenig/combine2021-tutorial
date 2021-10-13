@@ -1,3 +1,5 @@
 sbmlutils
 pandas
 matplotlib
+black
+rich
