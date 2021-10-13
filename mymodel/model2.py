@@ -4,11 +4,9 @@
 
 from pathlib import Path
 
-import roadrunner
 from sbmlutils.cytoscape import visualize_sbml
 from sbmlutils.factory import *
 from sbmlutils.metadata import *
-from pymetadata.omex import *
 
 
 class U(Units):
@@ -19,8 +17,8 @@ class U(Units):
 
 
 _m = Model(
-    sid="model1",
-    name="Example model from COMBINE2021",
+    sid="model2",
+    name="Example model from COMBINE2021 linear chain",
     notes="""
     # COMBINE2021 model
     This model was built within the **tutorial session**.
@@ -47,60 +45,50 @@ _m = Model(
             unit=U.liter
         ),
     ],
+    parameters=[
+        Parameter("R_Vmax", 10.0, U.mmole_per_min,
+                          sboTerm=SBO.MAXIMAL_VELOCITY),
+        Parameter("R_Km", 0.1, U.mM, sboTerm=SBO.MICHAELIS_CONSTANT)
+    ],
     species=[
         Species(
-            sid="glc",
+            sid="S0",
             compartment="c",
             initialConcentration=10.0,
             hasOnlySubstanceUnits=False,
             sboTerm=SBO.SIMPLE_CHEMICAL,
-            name="glucose",
+            name="S0",
             annotations=[
-                (BQB.IS, "ncit/C2831"),
-                (BQB.IS, "CHEBI:17234"),
             ],
             substanceUnit=U.mmole
         ),
+    ],
+    reactions=[
+    ]
+)
+
+n_chain = 10
+for k in range(n_chain):
+    _m.species.append(
         Species(
-            sid="glc6p",
+            sid=f"S{k+1}",
             compartment="c",
             initialConcentration=0.0,
             hasOnlySubstanceUnits=False,
             sboTerm=SBO.SIMPLE_CHEMICAL,
-            name="glucose 6-phosphate",
-            annotations=[
-                # FIXME
-            ],
+            name=f"S{k+1}",
             substanceUnit=U.mmole
         )
-    ],
-    reactions=[
+    )
+    _m.reactions.append(
         Reaction(
-            sid="HK",
-            name="hexokinase",
+            sid=f"R{k}",
+            name=f"R{k}",
             sboTerm=SBO.BIOCHEMICAL_REACTION,
-            equation="glc -> glc6p",
-            pars=[
-                Parameter("HK_Vmax", 10.0, U.mmole_per_min,
-                          sboTerm=SBO.MAXIMAL_VELOCITY),
-                Parameter("HK_Km_glc", 0.1, U.mM, sboTerm=SBO.MICHAELIS_CONSTANT,
-                          notes="""
-                          From ABC1987: Km = 0.1 +- 0.02 mM
-                          """),
-            ],
-            formula=("HK_Vmax * glc/(glc + HK_Km_glc)", U.mmole_per_min)
+            equation=f"S{k} -> S{k+1}",
+            formula=(f"R_Vmax * S{k}/(S{k} + R_Km)", U.mmole_per_min)
         )
-    ]
-)
-
-
-def simulate(sbml_path: Path):
-    import pandas as pd
-    r: roadrunner.RoadRunner = roadrunner.RoadRunner(str(sbml_path))
-    _s = r.simulate(start=0, end=10, steps=1000)
-    r.plot(_s)
-    s = pd.DataFrame(_s, columns=_s.colnames)
-    print(s)
+    )
 
 
 if __name__ == "__main__":
@@ -111,20 +99,7 @@ if __name__ == "__main__":
     )
     print(
         "Report: ",
-        "https://sbml4humans.de/model_url?url=http://be86-77-13-36-21.ngrok.io/model1.xml",
+        "https://sbml4humans.de/model_url?url=http://be86-77-13-36-21.ngrok.io/model2.xml",
     )
-    simulate(fac_result.sbml_path)
-
     visualize_sbml(sbml_path=fac_result.sbml_path,
                    delete_session=False)
-
-    omex = Omex()
-    omex.add_entry(
-        fac_result.sbml_path,
-        ManifestEntry(
-            location="./model1.xml", format=EntryFormat.SBML_L3V2
-        )
-    )
-    omex.to_omex(
-        Path(__file__).parent / "model1.omex"
-    )
