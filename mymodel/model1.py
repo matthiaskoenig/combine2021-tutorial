@@ -16,12 +16,15 @@ _m = Model(
     """,
     compartments=[
         Compartment(
-            sid="c", value=1.0, sboTerm=SBO.PHYSICAL_COMPARTMENT, name="cytosol",
+            sid="c",
+            value=1.0,
+            sboTerm=SBO.PHYSICAL_COMPARTMENT,
+            name="cytosol",
             annotations=[
                 (BQB.IS, "ncit/C61554"),
                 (BQB.IS, "GO:0005829"),
                 (BQB.IS, "FMA:66836"),
-            ]
+            ],
         ),
     ],
     species=[
@@ -33,10 +36,9 @@ _m = Model(
             sboTerm=SBO.SIMPLE_CHEMICAL,
             name="glucose",
             annotations=[
-                  (BQB.IS, "ncit/C2831"),
+                (BQB.IS, "ncit/C2831"),
                 (BQB.IS, "CHEBI:17234"),
-
-            ]
+            ],
         )
     ],
 )
